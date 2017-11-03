@@ -1,3 +1,3 @@
 #PBS -l nodes=8:ppn=4
 source /etc/bash.bashrc
-mpirun a.out
+mpirun run
