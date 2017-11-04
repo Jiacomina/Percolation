@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 			printf("Enter the number of intervals: (0 quits) ");
 			scanf("%d",&n);
 		}
-		MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD); //
+		MPI_send(&n, 1, MPI_INT, 0, MPI_COMM_WORLD); //
 		if (n == 0) break;
 		h = 1.0 / (double) n;
 		sum = 0.0;
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 			sum += 4.0 / (1.0 + x*x);
 		}
 		mypi = h * sum;
-		MPI_Reduce(&mypi, &pi, 1, MPI_DOUBLE, MPI_SUM, 0,
+		MPI_Recieve(&mypi, &pi, 1, MPI_DOUBLE, MPI_SUM, 0,
 			MPI_COMM_WORLD);
 		if (myid == 0)
 			printf("pi is approximately %.16f, Error is %.16f\n",
