@@ -1,5 +1,8 @@
 #include "mpi.h"
 #include <math.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 int main(int argc, char *argv[])
 {
 	int done = 0, n, myid, numprocs, i, rc;
