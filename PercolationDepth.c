@@ -37,7 +37,6 @@ void printLattice(char** lattice){
     }
 }
 // fill up randomly allocated lattice sites
-
 void createSiteLattice(float p_seed){
     
 #pragma omp parallel for collapse(2)
@@ -326,37 +325,41 @@ int main(int argc, char* argv[]){
             if(percolation_type == 0) printf("Percolation type: Row\n");
             else if(percolation_type == 1) printf("Percolation type: Column\n");
             else if(percolation_type == 2) printf("Percolation type: Row & Column\n");
+
         }
 
         num_threads = atoi(argv[5]);
         omp_set_num_threads(num_threads); 
         
         printf("%i: Do array calculations\n", pid);
-        // // site lattice
-        // if(is_site_perc){
+        // site lattice
+        if(is_site_perc){
             
-        //     //dynamically allocate lattice size
-        //     SITE_LATTICE = (char **) malloc(LATTICE_SIZE * sizeof(char*));
-        //     for(int i = 0; i < LATTICE_SIZE; i++){
-        //         SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
-        //     }
+            //dynamically allocate lattice size
+            SITE_LATTICE = (char **) malloc(LATTICE_SIZE * sizeof(char*));
+            for(int i = 0; i < LATTICE_SIZE; i++){
+                SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
+            }
+            if(pid == 0){
+                createSiteLattice(p_seed);
+                int MPI_Bcast(&(SITE_LATTICE[0][0]), LATTICE_SIZE*LATTICE_SIZE, MPI_CHAR, 0, MPI_Comm comm);
+            }
             
-        //     createSiteLattice(p_seed);
-        //     // check created lattice for Site Percolation
-        //     checkSiteLattice();
-        // }
-        // else {
-        //     getBondLattice();
+            // check created lattice for Site Percolation
+            //     checkSiteLattice();
+            free(SITE_LATTICE);
+        }
+        else {
+            getBondLattice();
         //     checkBondLattice(p_seed);
-        //     free(BOND_LATTICE);
-        // }
+            free(BOND_LATTICE);
+        }
         
         if(pid == 0){
             //get end time and calculate
             gettimeofday(&end, NULL);
             double delta = ((end.tv_sec  - start.tv_sec) * 1000000u + end.tv_usec - start.tv_usec) / 1.e6;
             printf("Time =%f\n", delta);
-            free(SITE_LATTICE);
             
             switch(percolation_type){
                 case 0: if(highestRow) printf("Row Percolation: true\n");
