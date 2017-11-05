@@ -341,7 +341,6 @@ int main(int argc, char* argv[]){
                 SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
             }
             createSiteLattice(p_seed);
-            }
             if(pid == 1)  printLattice(SITE_LATTICE);
             // check created lattice for Site Percolation
             //     checkSiteLattice();
