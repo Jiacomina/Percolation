@@ -344,7 +344,7 @@ int main(int argc, char* argv[]){
         }
         else {
             getBondLattice();
-            //checkBondLattice(p_seed);
+            checkBondLattice(p_seed);
             free(BOND_LATTICE);
         }
         
