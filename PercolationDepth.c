@@ -260,7 +260,7 @@ void checkBondLattice(float p_seed){
             }
         }
     }
-
+    printf("%i/%i: Largest Lattice %i\n", pid, numProcess, largestCluster);
     MPI_Reduce(&largestCluster, &thelargestCluster, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
 
     // // starting from each row of leftmost column (excluding top left site)
