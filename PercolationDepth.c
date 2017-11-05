@@ -245,7 +245,7 @@ void checkBondLattice(float p_seed){
 
     for(int i = 1; i < LATTICE_SIZE; i++){
         if((i + numProcess) % numProcess == pid){
-            clusterSize = checkBond(0, i, p_seed);
+            int clusterSize = checkBond(0, i, p_seed);
             if(clusterSize > largestCluster){
                 largestCluster = clusterSize;
             }
@@ -254,7 +254,7 @@ void checkBondLattice(float p_seed){
 
     for(int i = 1; i < LATTICE_SIZE; i++){
         if((i + numProcess) % numProcess == pid){
-            clusterSize = checkBond(i, 0, p_seed);
+            int clusterSize = checkBond(i, 0, p_seed);
             if(clusterSize > largestCluster){
                 largestCluster = clusterSize;
             }
