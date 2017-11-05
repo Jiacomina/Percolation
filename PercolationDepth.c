@@ -372,7 +372,7 @@ int main(int argc, char* argv[]){
                     break;
                 default: fprintf(stderr, "Percolation Type Invalid\n");
             }
-                MPI_Barrier(MPI_COMM_WORLD);
+                //MPI_Barrier(MPI_COMM_WORLD);
                 printf("Largest Cluster: %i\n", thelargestCluster);
         }
     }
