@@ -285,7 +285,7 @@ int main(int argc, char* argv[]){
     MPI_Comm_size(MPI_COMM_WORLD, &numProcess); // reports the rank, a number between 0 and size-1 identifying the calling 
 
     float p_seed;
-    srand(10);
+    srand(TIME(NULL));
     // get start time
     struct timeval start, end;
     gettimeofday(&start, NULL);
