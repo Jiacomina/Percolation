@@ -289,9 +289,9 @@ int main(int argc, char* argv[]){
 
     if(pid != 0){
         printf("Process number %i of %i", pid, numProcess);
-        return;
+        return 0;
     }
-    
+
     float p_seed;
     srand(time(NULL));
     // get start time
