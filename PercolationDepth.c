@@ -227,7 +227,7 @@ int checkBond(int r, int c, float p_seed){
     return clusterSize;
 }
 void checkBondLattice(float p_seed){
-    int largestCluster;
+    int largestCluster = 0;
     // divide lattice into parts
     // int num_seg = numProcess;
     // int sub_lattice_size = LATTICE_SIZE / num_seg;
