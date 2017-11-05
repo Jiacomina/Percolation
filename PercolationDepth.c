@@ -298,7 +298,7 @@ int main(int argc, char* argv[]){
     struct timeval start, end;
     gettimeofday(&start, NULL);
     int percolation_type = atoi(argv[4]);
-
+    printf("hi0\n");
     if(argc >= 5){
 
         LATTICE_SIZE = atoi(argv[1]);
