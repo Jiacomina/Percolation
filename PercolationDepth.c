@@ -142,7 +142,6 @@ void clearLattice(char** dest){
 
 void checkSiteLattice(){
     char **lattice_check;
-    printf("hi1\n");
     lattice_check = (char**) malloc(LATTICE_SIZE * sizeof(char*));
     #pragma omp parallel
     {
@@ -151,7 +150,6 @@ void checkSiteLattice(){
             lattice_check[i] = (char*) malloc(LATTICE_SIZE * sizeof(char));
         }
     }
-    printf("hi2\n");
     //copy lattice into lattice_copy
     clearLattice(lattice_check);
     printLattice(lattice_check);
@@ -298,7 +296,6 @@ int main(int argc, char* argv[]){
     struct timeval start, end;
     gettimeofday(&start, NULL);
     int percolation_type = atoi(argv[4]);
-    printf("hi0\n");
     if(argc >= 5){
 
         LATTICE_SIZE = atoi(argv[1]);
@@ -339,7 +336,6 @@ int main(int argc, char* argv[]){
         omp_set_num_threads(num_threads); 
         
         MPI_Barrier(MPI_COMM_WORLD);
-        printf("ISSITE PERC %i\n", is_site_perc);
         // site lattice
         if(is_site_perc){
             //dynamically allocate lattice size
@@ -347,12 +343,9 @@ int main(int argc, char* argv[]){
             for(int i = 0; i < LATTICE_SIZE; i++){
                 SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
             }
-            printf("hiiii3\n");
             createSiteLattice(p_seed);
             // check created lattice for Site Percolation
-            printf("hiiii4\n");
             checkSiteLattice();
-            printf("hiiii5\n");
             free(SITE_LATTICE);
         }
         else {
