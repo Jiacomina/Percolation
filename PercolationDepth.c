@@ -38,20 +38,20 @@ void printLattice(char** lattice){
 }
 // fill up randomly allocated lattice sites
 void createSiteLattice(float p_seed){
-    
-#pragma omp parallel for collapse(2)
-    for(int c = 0; c < LATTICE_SIZE; c++){
-        
-        for(int r = 0; r < LATTICE_SIZE; r++){
-            float random = ((float) rand())/((float) RAND_MAX);
-            if(random <= p_seed){
-                SITE_LATTICE[c][r] = '1'; // occupied
-            }
-            else{
-                SITE_LATTICE[c][r] = '0'; // not occupied
+    printf("creatinglattice\n");
+    #pragma omp parallel for collapse(2)
+        for(int c = 0; c < LATTICE_SIZE; c++){
+            
+            for(int r = 0; r < LATTICE_SIZE; r++){
+                float random = ((float) rand())/((float) RAND_MAX);
+                if(random <= p_seed){
+                    SITE_LATTICE[c][r] = '1'; // occupied
+                }
+                else{
+                    SITE_LATTICE[c][r] = '0'; // not occupied
+                }
             }
         }
-    }
 }
 
 int checkSiteRowPerc(int r, int c, char **lattice_check){
@@ -341,8 +341,10 @@ int main(int argc, char* argv[]){
             for(int i = 0; i < LATTICE_SIZE; i++){
                 SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
             }
+
             if(pid == 0){
                 createSiteLattice(p_seed);
+                printf("[%i]", SITE_LATTICE[0],[0]);
                 printLattice(SITE_LATTICE);
                 MPI_Bcast(&(SITE_LATTICE[0][0]), LATTICE_SIZE*LATTICE_SIZE, MPI_CHAR, 0, MPI_COMM_WORLD);
             }
