@@ -15,6 +15,8 @@ int highestRow = 0;
 int row_percolates = 0;
 int column_percolates = 0;
 int num_threads = 1; 
+int pid;
+int numProcess;
 
 void printLattice(char** lattice){
     if(LATTICE_SIZE > 50) return;
@@ -159,37 +161,43 @@ void checkSiteLattice(){
     
     clearLattice(lattice_check);
     
-    int largestClusterArray[num_threads];
-    for(int i = 0; i < num_threads; i++){
-        largestClusterArray[i] = 0;
+    if(pid == 0){
+        int largestClusterArray[numProcess];
+        for(int i = 0; i < numProcess; i++){
+            largestClusterArray[i] = 0;
+        }
     }
 
-    #pragma omp parallel
-    {
-        #pragma omp for
-        for(int i = 1; i < LATTICE_SIZE; i++){
+    for(int i = 1; i < LATTICE_SIZE; i++){
+        if((i + numProcess) % numProcess == pid){
             clearLattice(lattice_check);
             if(lattice_check[i][0] == 1) lattice_check[i][0] = 3;
             int clusterSize = checkSiteRowPerc(0, i, lattice_check);
-            if(clusterSize > largestClusterArray[omp_get_thread_num()]){
-                largestClusterArray[omp_get_thread_num()] = clusterSize;
+            if(clusterSize > largestCluster){
+                largestCluster = clusterSize;
             }
         }
+        
+    }
 
-        #pragma omp for
-        for(int i = 0; i < LATTICE_SIZE; i++){
+    for(int i = 0; i < LATTICE_SIZE; i++){
+        if((i + numProcess) % numProcess == pid){
             clearLattice(lattice_check);
             if(lattice_check[0][i] == 1) lattice_check[0][i] = 3;
             int clusterSize = checkSiteColPerc(i, 0, lattice_check);
-            if(clusterSize > largestClusterArray[omp_get_thread_num()]){                
-                largestClusterArray[omp_get_thread_num()] = clusterSize;
+            if(clusterSize > largestClusterArray[pid]){                
+                largestClusterArray[pid] = clusterSize;
             }
         }
     }
+    
     free(lattice_check);
-    for(int i = 0; i < num_threads; i++){
-        if(largestClusterArray[i] > largestCluster) largestCluster = largestClusterArray[i];
-    }
+
+    printf("%i/%i: Largest Lattice %i\n", pid, numProcess, largestCluster);
+    // for(int i = 0; i < numProcess; i++){
+    //     if(largestClusterArray[i] > largestCluster) 
+    //         largestCluster = largestClusterArray[i];
+    // }
 }
 
 void getBondLattice(){
@@ -280,7 +288,6 @@ void checkBondLattice(float p_seed){
 int main(int argc, char* argv[]){
     
     // OPEN MPI
-    int pid, numProcess;
     MPI_Init(&argc, &argv); 
     MPI_Comm_rank(MPI_COMM_WORLD, &pid); // reports number of processes
     MPI_Comm_size(MPI_COMM_WORLD, &numProcess); // reports the rank, a number between 0 and size-1 identifying the calling 
@@ -343,12 +350,12 @@ int main(int argc, char* argv[]){
             createSiteLattice(p_seed);
             if(pid == 1 || pid == 2)  printLattice(SITE_LATTICE);
             // check created lattice for Site Percolation
-            //     checkSiteLattice();
+            checkSiteLattice();
             free(SITE_LATTICE);
         }
         else {
             getBondLattice();
-        //     checkBondLattice(p_seed);
+            //checkBondLattice(p_seed);
             free(BOND_LATTICE);
         }
         
