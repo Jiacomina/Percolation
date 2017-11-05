@@ -343,8 +343,8 @@ int main(int argc, char* argv[]){
 
             if(pid == 0){
                 createSiteLattice(p_seed);
-                MPI_Bcast(&(SITE_LATTICE[0][0]), LATTICE_SIZE*LATTICE_SIZE, MPI_CHAR, 0, MPI_COMM_WORLD);
             }
+            MPI_Bcast(&(SITE_LATTICE[0][0]), LATTICE_SIZE*LATTICE_SIZE, MPI_CHAR, 0, MPI_COMM_WORLD);
             if(pid == 1)  printLattice(SITE_LATTICE);
             // check created lattice for Site Percolation
             //     checkSiteLattice();
