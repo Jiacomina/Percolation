@@ -193,7 +193,7 @@ void checkSiteLattice(){
 
     printf("%i/%i: Largest Lattice %i\n", pid, numProcess, largestCluster);
     int thelargestCluster;
-    MPI_Reduce(largestCluster, thelargestCluster, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&largestCluster, &thelargestCluster, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if(pid != 0){
         printf("Largest Cluster: %i", thelargestCluster);
