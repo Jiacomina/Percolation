@@ -292,7 +292,8 @@ int main(int argc, char* argv[]){
     // get start time
     struct timeval start, end;
     gettimeofday(&start, NULL);
-    
+    int percolation_type = atoi(argv[4]);
+
     if(argc >= 5){
 
         if(pid == 0){
@@ -303,7 +304,6 @@ int main(int argc, char* argv[]){
                 printf("LATTICE SIZE MUST BE GREATER THAN 0\n");
             }
             p_seed = atof(argv[2]);
-            int percolation_type = atoi(argv[4]);
             int is_site_perc;
             if(!strcmp(argv[3], "b") || !strcmp(argv[3], "B")){
                 is_site_perc = 0;
