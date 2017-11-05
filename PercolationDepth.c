@@ -295,25 +295,26 @@ int main(int argc, char* argv[]){
 
     if(argc >= 5){
 
-        if(pid == 0){
+        LATTICE_SIZE = atoi(argv[1]);
             
-            LATTICE_SIZE = atoi(argv[1]);
-            
-            if(LATTICE_SIZE < 1){
-                printf("LATTICE SIZE MUST BE GREATER THAN 0\n");
-            }
-            p_seed = atof(argv[2]);
-            int is_site_perc;
-            if(!strcmp(argv[3], "b") || !strcmp(argv[3], "B")){
-                is_site_perc = 0;
-            }
-            else if(!strcmp(argv[3], "s") || !strcmp(argv[3], "S")){
-                is_site_perc = 1;
-            }
-            else {
+        if(LATTICE_SIZE < 1){
+            if(pid == 0) printf("LATTICE SIZE MUST BE GREATER THAN 0\n");
+        }
+        p_seed = atof(argv[2]);
+        int is_site_perc;
+        if(!strcmp(argv[3], "b") || !strcmp(argv[3], "B")){
+            is_site_perc = 0;
+        }
+        else if(!strcmp(argv[3], "s") || !strcmp(argv[3], "S")){
+            is_site_perc = 1;
+        }
+        else {
+            if(pid == 0)
                 fprintf(stderr, "Input either 'S' or 'B' for site or bond percolation\n");
-                return 0;
-            }
+            return 0;
+        }
+
+        if(pid == 0){
 
             //print simulation constants
             printf("Lattice Size: %i\nProbability: %f\n", LATTICE_SIZE, p_seed);
