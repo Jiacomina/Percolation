@@ -287,98 +287,103 @@ int main(int argc, char* argv[]){
     MPI_Comm_rank(MPI_COMM_WORLD, &pid); // reports number of processes
     MPI_Comm_size(MPI_COMM_WORLD, &numProcess); // reports the rank, a number between 0 and size-1 identifying the calling 
 
-    if(pid != 0){
-        printf("Process number %i of %i\n", pid+1, numProcess);
-        return 0;
-    }
-
-    float p_seed;
-    srand(time(NULL));
-    // get start time
-    struct timeval start, end;
-    gettimeofday(&start, NULL);
-
     if(argc >= 5){
-        
-        LATTICE_SIZE = atoi(argv[1]);
-        
-        if(LATTICE_SIZE < 1){
-            printf("LATTICE SIZE MUST BE GREATER THAN 0\n");
+
+        if(pid == 0){
+            float p_seed;
+            srand(time(NULL));
+            // get start time
+            struct timeval start, end;
+            gettimeofday(&start, NULL);
+            
+            LATTICE_SIZE = atoi(argv[1]);
+            
+            if(LATTICE_SIZE < 1){
+                printf("LATTICE SIZE MUST BE GREATER THAN 0\n");
+            }
+            p_seed = atof(argv[2]);
+            int percolation_type = atoi(argv[4]);
+            int is_site_perc;
+            if(!strcmp(argv[3], "b") || !strcmp(argv[3], "B")){
+                is_site_perc = 0;
+            }
+            else if(!strcmp(argv[3], "s") || !strcmp(argv[3], "S")){
+                is_site_perc = 1;
+            }
+            else {
+                fprintf(stderr, "Input either 'S' or 'B' for site or bond percolation\n");
+                return 0;
+            }
+
+            //print simulation constants
+            printf("Lattice Size: %i\nProbability: %f\n", LATTICE_SIZE, p_seed);
+            printf("Type of Lattice: ");
+            
+            if(is_site_perc == 1) printf("Site\n");
+            else printf("Bond\n");
+            
+            if(percolation_type == 0) printf("Percolation type: Row\n");
+            else if(percolation_type == 1) printf("Percolation type: Column\n");
+            else if(percolation_type == 2) printf("Percolation type: Row & Column\n");
         }
-        p_seed = atof(argv[2]);
-        int percolation_type = atoi(argv[4]);
-        int is_site_perc;
-        if(!strcmp(argv[3], "b") || !strcmp(argv[3], "B")){
-            is_site_perc = 0;
-        }
-        else if(!strcmp(argv[3], "s") || !strcmp(argv[3], "S")) is_site_perc = 1;
-        else {
-            fprintf(stderr, "Input either 'S' or 'B' for site or bond percolation\n");
-            return 0;
-        }
+
         num_threads = atoi(argv[5]);
         omp_set_num_threads(num_threads); 
-
-        //print simulation constants
-        printf("Lattice Size: %i\nProbability: %f\n", LATTICE_SIZE, p_seed);
-        printf("Type of Lattice: ");
         
-        if(is_site_perc == 1) printf("Site\n");
-        else printf("Bond\n");
-        
-        if(percolation_type == 0) printf("Percolation type: Row\n");
-        else if(percolation_type == 1) printf("Percolation type: Column\n");
-        else if(percolation_type == 2) printf("Percolation type: Row & Column\n");
-        
-        // site lattice
-        if(is_site_perc){
+        printf("%i: Do array calculations\n", pid);
+        // // site lattice
+        // if(is_site_perc){
             
-            //dynamically allocate lattice size
-            SITE_LATTICE = (char **) malloc(LATTICE_SIZE * sizeof(char*));
-            for(int i = 0; i < LATTICE_SIZE; i++){
-                SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
-            }
+        //     //dynamically allocate lattice size
+        //     SITE_LATTICE = (char **) malloc(LATTICE_SIZE * sizeof(char*));
+        //     for(int i = 0; i < LATTICE_SIZE; i++){
+        //         SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
+        //     }
             
-            createSiteLattice(p_seed);
-            // check created lattice for Site Percolation
-            checkSiteLattice();
-        }
-        else {
-            getBondLattice();
-            checkBondLattice(p_seed);
-            free(BOND_LATTICE);
-        }
+        //     createSiteLattice(p_seed);
+        //     // check created lattice for Site Percolation
+        //     checkSiteLattice();
+        // }
+        // else {
+        //     getBondLattice();
+        //     checkBondLattice(p_seed);
+        //     free(BOND_LATTICE);
+        // }
         
-        //get end time and calculate
-        gettimeofday(&end, NULL);
-        double delta = ((end.tv_sec  - start.tv_sec) * 1000000u + end.tv_usec - start.tv_usec) / 1.e6;
-        printf("Time =%f\n", delta);
-        free(SITE_LATTICE);
-        
-        switch(percolation_type){
-            case 0: if(highestRow) printf("Row Percolation: true\n");
-            else { printf("Row Percolation: false\n");}
-                break;
-            case 1:if(column_percolates) printf("Column Percolation: true\n");
-            else {printf("Column Percolation: false\n");}
-                break;
-            case 2: if(column_percolates && row_percolates) printf("Row & Column Percolation: true\n");
-            else {
-                printf("Row & Column Percolation: false\n");
-                if(column_percolates) printf(" Column Percolation: true\n");
-                else printf(" Column Percolation: false\n");
-                if(row_percolates) printf(" Row Percolation: true\n");
-                else printf(" Row Percolation: false\n");
+        if(pid == 0){
+            //get end time and calculate
+            gettimeofday(&end, NULL);
+            double delta = ((end.tv_sec  - start.tv_sec) * 1000000u + end.tv_usec - start.tv_usec) / 1.e6;
+            printf("Time =%f\n", delta);
+            free(SITE_LATTICE);
+            
+            switch(percolation_type){
+                case 0: if(highestRow) printf("Row Percolation: true\n");
+                else { printf("Row Percolation: false\n");}
+                    break;
+                case 1:if(column_percolates) printf("Column Percolation: true\n");
+                else {printf("Column Percolation: false\n");}
+                    break;
+                case 2: if(column_percolates && row_percolates) printf("Row & Column Percolation: true\n");
+                else {
+                    printf("Row & Column Percolation: false\n");
+                    if(column_percolates) printf(" Column Percolation: true\n");
+                    else printf(" Column Percolation: false\n");
+                    if(row_percolates) printf(" Row Percolation: true\n");
+                    else printf(" Row Percolation: false\n");
+                }
+                    break;
+                default: fprintf(stderr, "Percolation Type Invalid\n");
             }
-                break;
-            default: fprintf(stderr, "Percolation Type Invalid\n");
-        }
-        printf("largestCluster: %i\n", largestCluster);
-        MPI_Finalize();
+            printf("largestCluster: %i\n", largestCluster);
+            }
     }
     else {
-        fprintf(stderr, "USAGE: [grid size] [p of seed] [s (site) or b (bond)] [type of percolation]\n Type of percolation: \n 0 - cluster must span all rows \n 1 - cluster must span all columns \n 2 - cluster must span all rows & columns\n");
+        id(pid == 0){
+            fprintf(stderr, "USAGE: [grid size] [p of seed] [s (site) or b (bond)] [type of percolation]\n Type of percolation: \n 0 - cluster must span all rows \n 1 - cluster must span all columns \n 2 - cluster must span all rows & columns\n");
+        }
         return 0;
     }
+    MPI_Finalize();
     return 0;
 }
