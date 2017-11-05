@@ -9,7 +9,7 @@
 int LATTICE_SIZE = 10; //default
 char **SITE_LATTICE;
 char **BOND_LATTICE;
-int largestCluster = 0;
+int thelargestCluster = 0;
 int highestColumn = 0;
 int highestRow = 0;
 int row_percolates = 0;
@@ -142,6 +142,7 @@ void clearLattice(char** dest){
 
 void checkSiteLattice(){
     char **lattice_check;
+    int largestCluster;
     lattice_check = (char**) malloc(LATTICE_SIZE * sizeof(char*));
     #pragma omp parallel
     {
@@ -192,16 +193,8 @@ void checkSiteLattice(){
     free(lattice_check);
 
     printf("%i/%i: Largest Lattice %i\n", pid, numProcess, largestCluster);
-    int thelargestCluster;
-    MPI_Reduce(&largestCluster, &thelargestCluster, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
 
-    if(pid == 0){
-        printf("%i/%i: Largest Cluster: %i", pid, numProcess, thelargestCluster);
-    }
-    // for(int i = 0; i < numProcess; i++){
-    //     if(largestClusterArray[i] > largestCluster) 
-    //         largestCluster = largestClusterArray[i];
-    // }
+    MPI_Reduce(&largestCluster, &thelargestCluster, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
 }
 
 void getBondLattice(){
@@ -384,8 +377,9 @@ int main(int argc, char* argv[]){
                     break;
                 default: fprintf(stderr, "Percolation Type Invalid\n");
             }
-            printf("largestCluster: %i\n", largestCluster);
-            }
+                printf("Largest Cluster: %i" thelargestCluster);
+        }
+        }
     }
     else {
         if(pid == 0){
