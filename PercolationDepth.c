@@ -379,7 +379,7 @@ int main(int argc, char* argv[]){
             }
     }
     else {
-        id(pid == 0){
+        if(pid == 0){
             fprintf(stderr, "USAGE: [grid size] [p of seed] [s (site) or b (bond)] [type of percolation]\n Type of percolation: \n 0 - cluster must span all rows \n 1 - cluster must span all columns \n 2 - cluster must span all rows & columns\n");
         }
         return 0;
