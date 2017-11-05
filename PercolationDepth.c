@@ -288,7 +288,7 @@ int main(int argc, char* argv[]){
     MPI_Comm_size(MPI_COMM_WORLD, &numProcess); // reports the rank, a number between 0 and size-1 identifying the calling 
 
     if(pid != 0){
-        printf("Process number %i of %i\n", pid, numProcess);
+        printf("Process number %i of %i\n", pid+1, numProcess);
         return 0;
     }
 
