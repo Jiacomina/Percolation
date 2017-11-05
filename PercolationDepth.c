@@ -227,52 +227,52 @@ int checkBond(int r, int c, float p_seed){
     return clusterSize;
 }
 void checkBondLattice(float p_seed){
-    
-    // divide lattice into parts
-    int num_seg = num_threads;
-    int sub_lattice_size = LATTICE_SIZE / num_seg;
-    int clusterSizeArray[num_threads];
-    for(int i = 0; i < num_threads; i++){
-        clusterSizeArray[i] = 0;
-    }
-    #pragma omp parallel
-    {
-        // starting from each column of top row
-        #pragma omp for
-            for(int i = 0; i < num_seg; i++){
-                int start = i*sub_lattice_size;
-                int end = (i+1)*sub_lattice_size;
-                int threadNum = omp_get_thread_num();
-                for(int c = start; c < end; c++)
-                {
-                    int clusterSize = 0;
-                    clusterSize = checkBond(0, c, p_seed);
-                    if(clusterSize > clusterSizeArray[threadNum]) clusterSizeArray[threadNum] = clusterSize;
-                }
-            }
+    // int largestCluster;
+    // // divide lattice into parts
+    // int num_seg = num_threads;
+    // int sub_lattice_size = LATTICE_SIZE / num_seg;
+    // int clusterSizeArray[num_threads];
+    // for(int i = 0; i < num_threads; i++){
+    //     clusterSizeArray[i] = 0;
+    // }
+    // #pragma omp parallel
+    // {
+    //     // starting from each column of top row
+    //     #pragma omp for
+    //         for(int i = 0; i < num_seg; i++){
+    //             int start = i*sub_lattice_size;
+    //             int end = (i+1)*sub_lattice_size;
+    //             int threadNum = omp_get_thread_num();
+    //             for(int c = start; c < end; c++)
+    //             {
+    //                 int clusterSize = 0;
+    //                 clusterSize = checkBond(0, c, p_seed);
+    //                 if(clusterSize > clusterSizeArray[threadNum]) clusterSizeArray[threadNum] = clusterSize;
+    //             }
+    //         }
 
-        #pragma omp for    
-            // starting from each row of leftmost column (excluding top left site)
-            for(int i = 0; i < num_seg; i++){
-                int start = i*sub_lattice_size;
-                int end = (i+1)*sub_lattice_size;
-                int threadNum = omp_get_thread_num();
-                for(int r = start; r < end; r++)
-                {
-                    int clusterSize = 0;
-                    clusterSize = checkBond(r, 0, p_seed);
-                    if(clusterSize > clusterSizeArray[threadNum]) clusterSizeArray[threadNum] = clusterSize;
-                }
-            }
-    }
+    //     #pragma omp for    
+    //         // starting from each row of leftmost column (excluding top left site)
+    //         for(int i = 0; i < num_seg; i++){
+    //             int start = i*sub_lattice_size;
+    //             int end = (i+1)*sub_lattice_size;
+    //             int threadNum = omp_get_thread_num();
+    //             for(int r = start; r < end; r++)
+    //             {
+    //                 int clusterSize = 0;
+    //                 clusterSize = checkBond(r, 0, p_seed);
+    //                 if(clusterSize > clusterSizeArray[threadNum]) clusterSizeArray[threadNum] = clusterSize;
+    //             }
+    //         }
+    // }
 
-    // get largest cluster from all results from threads
-    largestCluster = 0;
-    for(int i = 0; i < num_threads; i++){
-        if(clusterSizeArray[i] > largestCluster || largestCluster == 0)
-            largestCluster = clusterSizeArray[i];
-    }
-    printf("--------------------------\n");
+    // // get largest cluster from all results from threads
+    // largestCluster = 0;
+    // for(int i = 0; i < num_threads; i++){
+    //     if(clusterSizeArray[i] > largestCluster || largestCluster == 0)
+    //         largestCluster = clusterSizeArray[i];
+    // }
+    // printf("--------------------------\n");
 }
 
 int main(int argc, char* argv[]){
@@ -371,7 +371,6 @@ int main(int argc, char* argv[]){
                 default: fprintf(stderr, "Percolation Type Invalid\n");
             }
                 printf("Largest Cluster: %i", thelargestCluster);
-        }
         }
     }
     else {
