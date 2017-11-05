@@ -338,18 +338,21 @@ int main(int argc, char* argv[]){
         num_threads = atoi(argv[5]);
         omp_set_num_threads(num_threads); 
         
-        printf("%i: Do array calculations\n", pid);
+        MPI_Barrier(MPI_COMM_WORLD);
+
         // site lattice
         if(is_site_perc){
-            
             //dynamically allocate lattice size
             SITE_LATTICE = (char **) malloc(LATTICE_SIZE * sizeof(char*));
             for(int i = 0; i < LATTICE_SIZE; i++){
                 SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
             }
+            printf("hiiii3\n");
             createSiteLattice(p_seed);
             // check created lattice for Site Percolation
+            printf("hiiii4\n");
             checkSiteLattice();
+            printf("hiiii5\n");
             free(SITE_LATTICE);
         }
         else {
