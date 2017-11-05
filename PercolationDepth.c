@@ -185,8 +185,8 @@ void checkSiteLattice(){
             clearLattice(lattice_check);
             if(lattice_check[0][i] == 1) lattice_check[0][i] = 3;
             int clusterSize = checkSiteColPerc(i, 0, lattice_check);
-            if(clusterSize > largestClusterArray[pid]){                
-                largestClusterArray[pid] = clusterSize;
+            if(clusterSize > largestCluster){                
+                largestCluster = clusterSize;
             }
         }
     }
