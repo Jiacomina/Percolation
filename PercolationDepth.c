@@ -287,14 +287,15 @@ int main(int argc, char* argv[]){
     MPI_Comm_rank(MPI_COMM_WORLD, &pid); // reports number of processes
     MPI_Comm_size(MPI_COMM_WORLD, &numProcess); // reports the rank, a number between 0 and size-1 identifying the calling 
 
+    float p_seed;
+    srand(time(NULL));
+    // get start time
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
+    
     if(argc >= 5){
 
         if(pid == 0){
-            float p_seed;
-            srand(time(NULL));
-            // get start time
-            struct timeval start, end;
-            gettimeofday(&start, NULL);
             
             LATTICE_SIZE = atoi(argv[1]);
             
