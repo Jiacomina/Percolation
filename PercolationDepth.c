@@ -343,6 +343,7 @@ int main(int argc, char* argv[]){
             }
             if(pid == 0){
                 createSiteLattice(p_seed);
+                printLattice(SITE_LATTICE);
                 MPI_Bcast(&(SITE_LATTICE[0][0]), LATTICE_SIZE*LATTICE_SIZE, MPI_CHAR, 0, MPI_COMM_WORLD);
             }
             
