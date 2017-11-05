@@ -142,7 +142,7 @@ void clearLattice(char** dest){
 
 void checkSiteLattice(){
     char **lattice_check;
-    int largestCluster;
+    int largestCluster = 0;
     lattice_check = (char**) malloc(LATTICE_SIZE * sizeof(char*));
     #pragma omp parallel
     {
@@ -159,13 +159,6 @@ void checkSiteLattice(){
     lattice_check[0][0] = 3;
     
     clearLattice(lattice_check);
-    
-    if(pid == 0){
-        int largestClusterArray[numProcess];
-        for(int i = 0; i < numProcess; i++){
-            largestClusterArray[i] = 0;
-        }
-    }
 
     for(int i = 1; i < LATTICE_SIZE; i++){
         if((i + numProcess) % numProcess == pid){
@@ -377,7 +370,7 @@ int main(int argc, char* argv[]){
                     break;
                 default: fprintf(stderr, "Percolation Type Invalid\n");
             }
-                printf("Largest Cluster: %i" thelargestCluster);
+                printf("Largest Cluster: %i", thelargestCluster);
         }
         }
     }
