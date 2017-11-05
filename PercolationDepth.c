@@ -339,7 +339,7 @@ int main(int argc, char* argv[]){
         omp_set_num_threads(num_threads); 
         
         MPI_Barrier(MPI_COMM_WORLD);
-
+        printf("ISSITE PERC %i\n", is_site_perc);
         // site lattice
         if(is_site_perc){
             //dynamically allocate lattice size
