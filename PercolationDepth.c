@@ -281,12 +281,23 @@ void checkBondLattice(float p_seed){
 
 int main(int argc, char* argv[]){
     
+    // OPEN MPI
+    int pid, numProcess;
+    MPI_Init(&argc, &argv); 
+    MPI_Comm_rank(MPI_COMM_WORLD, &pid); // reports number of processes
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcess); // reports the rank, a number between 0 and size-1 identifying the calling 
+
+    if(pid != 0){
+        printf("Process number %i of %i", pid, numProcess);
+        return;
+    }
+    
     float p_seed;
     srand(time(NULL));
     // get start time
     struct timeval start, end;
     gettimeofday(&start, NULL);
-    
+
     if(argc >= 5){
         
         LATTICE_SIZE = atoi(argv[1]);
@@ -320,7 +331,7 @@ int main(int argc, char* argv[]){
         else if(percolation_type == 2) printf("Percolation type: Row & Column\n");
         
         // site lattice
-        if(is_site_perc) {
+        if(is_site_perc){
             
             //dynamically allocate lattice size
             SITE_LATTICE = (char **) malloc(LATTICE_SIZE * sizeof(char*));
@@ -363,6 +374,7 @@ int main(int argc, char* argv[]){
             default: fprintf(stderr, "Percolation Type Invalid\n");
         }
         printf("largestCluster: %i\n", largestCluster);
+        MPI_Finalize();
     }
     else {
         fprintf(stderr, "USAGE: [grid size] [p of seed] [s (site) or b (bond)] [type of percolation]\n Type of percolation: \n 0 - cluster must span all rows \n 1 - cluster must span all columns \n 2 - cluster must span all rows & columns\n");
