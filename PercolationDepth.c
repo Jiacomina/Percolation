@@ -286,6 +286,7 @@ int main(int argc, char* argv[]){
     MPI_Comm_size(MPI_COMM_WORLD, &numProcess); // reports the rank, a number between 0 and size-1 identifying the calling 
 
     float p_seed;
+    srand(time(10));
     // get start time
     struct timeval start, end;
     gettimeofday(&start, NULL);
@@ -340,7 +341,7 @@ int main(int argc, char* argv[]){
                 SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
             }
             createSiteLattice(p_seed);
-            if(pid == 1 || pid == 8)  printLattice(SITE_LATTICE);
+            if(pid == 1 || pid == 2)  printLattice(SITE_LATTICE);
             // check created lattice for Site Percolation
             //     checkSiteLattice();
             free(SITE_LATTICE);
