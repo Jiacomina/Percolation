@@ -142,7 +142,7 @@ void clearLattice(char** dest){
 
 void checkSiteLattice(){
     char **lattice_check;
-    
+    printf("hi1\n");
     lattice_check = (char**) malloc(LATTICE_SIZE * sizeof(char*));
     #pragma omp parallel
     {
@@ -151,7 +151,7 @@ void checkSiteLattice(){
             lattice_check[i] = (char*) malloc(LATTICE_SIZE * sizeof(char));
         }
     }
-    
+    printf("hi2\n");
     //copy lattice into lattice_copy
     clearLattice(lattice_check);
     printLattice(lattice_check);
@@ -348,7 +348,6 @@ int main(int argc, char* argv[]){
                 SITE_LATTICE[i] = (char *) malloc(LATTICE_SIZE * sizeof(char));
             }
             createSiteLattice(p_seed);
-            if(pid == 1 || pid == 2)  printLattice(SITE_LATTICE);
             // check created lattice for Site Percolation
             checkSiteLattice();
             free(SITE_LATTICE);
