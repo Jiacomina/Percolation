@@ -38,7 +38,6 @@ void printLattice(char** lattice){
 }
 // fill up randomly allocated lattice sites
 void createSiteLattice(float p_seed){
-    printf("creatinglattice\n");
     #pragma omp parallel for collapse(2)
         for(int c = 0; c < LATTICE_SIZE; c++){
             
@@ -344,11 +343,9 @@ int main(int argc, char* argv[]){
 
             if(pid == 0){
                 createSiteLattice(p_seed);
-                printf("[%i]", SITE_LATTICE[0][0]);
-                printLattice(SITE_LATTICE);
                 MPI_Bcast(&(SITE_LATTICE[0][0]), LATTICE_SIZE*LATTICE_SIZE, MPI_CHAR, 0, MPI_COMM_WORLD);
             }
-            
+            if(pid == 1)  printLattice(SITE_LATTICE);
             // check created lattice for Site Percolation
             //     checkSiteLattice();
             free(SITE_LATTICE);
