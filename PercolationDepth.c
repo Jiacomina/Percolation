@@ -188,6 +188,8 @@ void checkSiteLattice(){
     printf("%i/%i: Largest Lattice %i\n", pid, numProcess, largestCluster);
 
     MPI_Reduce(&largestCluster, &thelargestCluster, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&row_percolates, &row_percolates, 1, MPI_INT, MPI_LOR, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&column_percolates, &column_percolates, 1, MPI_INT, MPI_LOR, 0, MPI_COMM_WORLD);
 }
 
 void getBondLattice(){
