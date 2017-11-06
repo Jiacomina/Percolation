@@ -188,8 +188,6 @@ void checkSiteLattice(){
     printf("%i/%i: Largest Lattice %i\n", pid, numProcess, largestCluster);
 
     MPI_Reduce(&largestCluster, &thelargestCluster, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
-    //MPI_Reduce(&row_percolates, &row_percolates, 1, MPI_INT, MPI_LOR, 0, MPI_COMM_WORLD);
-    //MPI_Reduce(&column_percolates, &column_percolates, 1, MPI_INT, MPI_LOR, 0, MPI_COMM_WORLD);
 }
 
 void getBondLattice(){
@@ -349,7 +347,13 @@ int main(int argc, char* argv[]){
             checkBondLattice(p_seed);
             free(BOND_LATTICE);
         }
-        
+
+        int row_percolation;
+        int column_percolation:
+
+        MPI_Reduce(&row_percolation, &row_percolates, 1, MPI_INT, MPI_LOR, 0, MPI_COMM_WORLD);
+        MPI_Reduce(&column_percolation, &column_percolates, 1, MPI_INT, MPI_LOR, 0, MPI_COMM_WORLD);
+
         if(pid == 0){
             //get end time and calculate
             gettimeofday(&end, NULL);
@@ -360,15 +364,15 @@ int main(int argc, char* argv[]){
                 case 0: if(highestRow) printf("Row Percolation: true\n");
                 else { printf("Row Percolation: false\n");}
                     break;
-                case 1:if(column_percolates) printf("Column Percolation: true\n");
+                case 1:if(column_percolation) printf("Column Percolation: true\n");
                 else {printf("Column Percolation: false\n");}
                     break;
-                case 2: if(column_percolates && row_percolates) printf("Row & Column Percolation: true\n");
+                case 2: if(column_percolation && row_percolation) printf("Row & Column Percolation: true\n");
                 else {
                     printf("Row & Column Percolation: false\n");
-                    if(column_percolates) printf(" Column Percolation: true\n");
+                    if(row_percolation) printf(" Column Percolation: true\n");
                     else printf(" Column Percolation: false\n");
-                    if(row_percolates) printf(" Row Percolation: true\n");
+                    if(column_percolation) printf(" Row Percolation: true\n");
                     else printf(" Row Percolation: false\n");
                 }
                     break;
@@ -376,6 +380,8 @@ int main(int argc, char* argv[]){
             }
                 //MPI_Barrier(MPI_COMM_WORLD);
                 printf("Largest Cluster: %i\n", thelargestCluster);
+
+
         }
     }
     else {
