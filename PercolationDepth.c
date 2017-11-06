@@ -349,7 +349,7 @@ int main(int argc, char* argv[]){
         }
 
         int row_percolation;
-        int column_percolation:
+        int column_percolation;
 
         MPI_Reduce(&row_percolation, &row_percolates, 1, MPI_INT, MPI_LOR, 0, MPI_COMM_WORLD);
         MPI_Reduce(&column_percolation, &column_percolates, 1, MPI_INT, MPI_LOR, 0, MPI_COMM_WORLD);
